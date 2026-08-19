@@ -25,9 +25,14 @@ A **Full-Stack Game Store** built with **Node.js, Express.js, and Angular** as p
 * Update Game
 * Delete Game
 
-### 👤 3. Users & Wishlist
-* User Profile
-* Update User Profile
+### 👤 3. Users CRUD
+* Create User
+* Get All Users
+* Get User by ID
+* Update User
+* Delete User
+
+### ❤️ 4. Wishlist
 * Add Game to Wishlist
 * Remove Game from Wishlist
 * View Wishlist
