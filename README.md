@@ -1,8 +1,8 @@
-# 🎮 NTI Final Project — Game Store
+# NTI Final Project — Game Store
 
 A simple **Full-Stack Game Store** built with **Node.js, Express.js, and React.js** as part of the NTI training final project.
 
-## 🚀 Features
+## Features
 
 ### 1. Authentication
 
