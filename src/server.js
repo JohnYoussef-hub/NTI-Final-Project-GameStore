@@ -2,7 +2,7 @@ const { setServers } = require("dns/promises")
 setServers(["8.8.8.8", "8.8.4.4"])
 const app = require("./app");
 app.set("query parser", "extended")
-const connectDB = require("./config/connectDB");
+const connectDB = require("./config/ConnectDB");
 
 
 connectDB()

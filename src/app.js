@@ -2,7 +2,9 @@ require("dotenv").config()
 const express = require("express")
 const path = require('path');
 const morgan = require("morgan")
-const productRouter=require("./routes/product.route");
+const gameRouter = require("./routes/game.route");
+const wishlistRouter = require("./routes/wishlist.route");
+const userRouter = require("./routes/user.route");
 const globalError = require("./middlewares/globalError")
 
 const app = express()
@@ -10,7 +12,9 @@ const app = express()
 
 app.use(express.json())
 app.use(morgan("dev"))
-app.use('/products',productRouter);
+app.use('/games', gameRouter);
+app.use('/wishlist', wishlistRouter);
+app.use('/users', userRouter);
 
 
 app.get("/", (req, res) => {
@@ -22,7 +26,7 @@ app.get("/", (req, res) => {
 
 
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, "views", "Error.html"));
+    res.status(404).sendFile(path.join(__dirname, "views", "Error.html"));
 });
 
 app.use(globalError)
