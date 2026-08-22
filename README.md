@@ -46,7 +46,7 @@ A **Full-Stack Game Store** built with **Node.js, Express.js, and Angular** as p
 ### 🟢 Backend Developers
 * **John Youssef** → Users CRUD & Wishlist
 * **Mohamed Mostafa** → Games CRUD & Wishlist
-* **Ezzat** → Auth & Search *(Assisted by John Youssef & Mohamed Mostafa)*
+* **Ezzat** → Auth & Search 
 
 ### 🔵 Frontend Developers
 * **Jannha Abourayah** → Frontend
