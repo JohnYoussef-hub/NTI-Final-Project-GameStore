@@ -49,7 +49,7 @@ A **Full-Stack Game Store** built with **Node.js, Express.js, and Angular** as p
 * **Ezzat** → Auth & Search 
 
 ### 🔵 Frontend Developers
-* **Jannha Abourayah** → Frontend
+* **Jannah Abouraya** → Frontend
 * **Eslam Adel** → Frontend
 * **Anas Maken** → Frontend
 
