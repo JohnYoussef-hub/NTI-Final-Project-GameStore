@@ -1,6 +1,6 @@
 const Wishlist = require("../models/wishlist.model")
 const User = require("../models/user.model")
-const Game = require("../models/game")
+const Game = require("../models/game.model")
 const AppError = require("../utils/AppError")
 const catchAsync = require("../utils/catchAsync")
 
