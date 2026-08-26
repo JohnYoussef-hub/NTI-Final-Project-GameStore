@@ -6,7 +6,7 @@ const gameRouter = require("./routes/game.route");
 const wishlistRouter = require("./routes/wishlist.route");
 const userRouter = require("./routes/user.route");
 const globalError = require("./middlewares/globalError")
-
+const authRouter = require("./routes/auth.route")
 const app = express()
 
 
@@ -15,7 +15,7 @@ app.use(morgan("dev"))
 app.use('/games', gameRouter);
 app.use('/wishlist', wishlistRouter);
 app.use('/users', userRouter);
-
+app.use("/auth",authRouter)
 
 app.get("/", (req, res) => {
     res.status(200).json({
