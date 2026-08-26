@@ -1,15 +1,22 @@
-const Game = require("../models/game")
+const Game = require("../models/game.model")
 const AppError = require("../utils/AppError")
 const catchAsync = require("../utils/catchAsync")
+const ApiFeatures = require("../utils/ApiFeatures")
 
 
 exports.getAllGames = catchAsync(async (req, res, next) => {
-
-    const games = await Game.find({ isDeleted: false })
+    const features = new ApiFeatures(Game.find({ isDeleted: false }), req.query)
+        .filter().fields().sort().search().pagination()
+    const games = await features.query
+    const totalGames = await Game.countDocuments({
+        isDeleted: false,
+        ...features.filterQuery
+    })
 
     res.status(200).json({
         success: true,
-        gameCount: games.length,
+        totalGames,
+        results: games.length,
         data: games
     })
 })

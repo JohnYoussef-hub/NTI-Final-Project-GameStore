@@ -7,6 +7,8 @@ const wishlistRouter = require("./routes/wishlist.route");
 const userRouter = require("./routes/user.route");
 const globalError = require("./middlewares/globalError")
 const authRouter = require("./routes/auth.route")
+const auth = require("./middlewares/auth")
+const restrictTo = require("./middlewares/restrictTo")
 const app = express()
 
 
@@ -14,7 +16,7 @@ app.use(express.json())
 app.use(morgan("dev"))
 app.use('/games', gameRouter);
 app.use('/wishlist', wishlistRouter);
-app.use('/users', userRouter);
+app.use('/users', auth, restrictTo("admin"), userRouter);
 app.use("/auth",authRouter)
 
 app.get("/", (req, res) => {

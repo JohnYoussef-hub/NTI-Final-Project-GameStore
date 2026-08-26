@@ -44,7 +44,7 @@ class ApiFeatures {
             const keyword = this.queryStr.search
             this.query = this.query.find({
                 $or : [
-                {name : {$regex : `^${keyword}`,$options: "i"}},
+                {title : {$regex : `^${keyword}`,$options: "i"}},
                 {description : {$regex : `${keyword}`,$options: "i"}},
             ]
         })
@@ -56,7 +56,7 @@ class ApiFeatures {
         let page = this.queryStr.page || 1
         let limit = this.queryStr.limit || 10 
         let skip = (page - 1) * limit
-        this.quey = this.query.skip(skip).limit(limit)
+        this.query = this.query.skip(skip).limit(limit)
         return this
     }
 }
