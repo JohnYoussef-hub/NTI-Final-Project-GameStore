@@ -9,6 +9,7 @@ const globalError = require("./middlewares/globalError")
 const authRouter = require("./routes/auth.route")
 const auth = require("./middlewares/auth")
 const restrictTo = require("./middlewares/restrictTo")
+const adminRouter = require("./routes/admin.route")
 const app = express()
 
 
@@ -18,6 +19,7 @@ app.use('/games', gameRouter);
 app.use('/wishlist', wishlistRouter);
 app.use('/users', auth, restrictTo("admin"), userRouter);
 app.use("/auth",authRouter)
+app.use("/admin", adminRouter)
 
 app.get("/", (req, res) => {
     res.status(200).json({
