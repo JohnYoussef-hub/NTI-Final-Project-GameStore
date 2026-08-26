@@ -1,58 +1,56 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose") 
+
 
 const userSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        minLength: [3, "min char for name is 3"],
-        maxLength: [30, "name must be below 30 char"],
-        trim: true
+    name : {
+        type : String ,
+        required : true ,
+        minLength : [3 , "min char for name is 3"],
+        maxLength : [30 , "name must be below 30 char"],
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true
+    email : {
+        type : String ,
+        required : true ,
+        unique : true , 
     },
-    password: {
-        type: String,
-        required: true,
-        minLength: [4, "min char for password is 4 char"],
-        select: false
+   password : {
+        type : String ,
+        required : true ,
+        minLength : [6, "min char for password is 6 char"],
+        select :false
     },
-    image: String,
-    role: {
-        type: String,
-        enum: ["user", "admin"],
-        default: "user",
-        select: false
+    image : String ,
+    role : {
+        type : String ,
+        enum : ["user" , "admin"] ,
+        default : "user" ,
+        select : false
+    } ,
+    isDeleted : {
+        type : Boolean , 
+        default : false ,
+        select :false
     },
-    isDeleted: {
-        type: Boolean,
-        default: false,
-        select: false
+    isActive : {
+        type : Boolean , 
+        default : false 
     },
-    isActive: {
-        type: Boolean,
-        default: false
+    confirmOTP : {
+        type : String ,
+        select : false
     },
-    confirmOTP: {
-        type: String,
-        select: false
+    OTPExpire : {
+        type : Date ,
+        select : false
     },
-    OTPExpire: {
-        type: Date,
-        select: false
-    },
-    resetToken: String,
-    resetTokenExpire: Date
+    resetToken : String
 
-}, {
-    timestamps: true,
-    versionKey: false
+} , {
+    timestamps : true ,
+    versionKey : false
 })
 
-const user = mongoose.model("user", userSchema);
 
-module.exports = user
+const User = mongoose.model("user" , userSchema)
+
+module.exports = User
