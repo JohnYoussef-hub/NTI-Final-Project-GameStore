@@ -12,7 +12,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  url = 'http://localhost:3000/users';
+  url = 'http://localhost:3000/auth';
 
   currentUser = signal<User | null>(this.loadUserFromStorage());
 
@@ -22,18 +22,35 @@ export class AuthService {
   loadUserFromStorage(): User | null {
     const storedUser = localStorage.getItem('user');
 
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (!storedUser || storedUser === 'undefined') {
+      return null;
+    }
+
+    try {
+      return JSON.parse(storedUser);
+    } catch (error) {
+      console.error('Failed to parse user from local storage', error);
+      return null;
+    }
   }
 
-  AuthHandleSuccess(response: AuthResponse) {
-    localStorage.setItem('user', JSON.stringify(response.user));
-    localStorage.setItem('token', response.token);
-    this.currentUser.set(response.user);
+  AuthHandleSuccess(response: any) {
+    const token = response.data.accessToken;
+    const user = response.data.user;
+
+    if (token) {
+      localStorage.setItem('token', token);
+    }
+
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+      this.currentUser.set(user);
+    }
   }
 
   register(userData: any) {
     return this.http
-      .post<AuthResponse>(`${this.url}/register`, userData)
+      .post<AuthResponse>(`${this.url}/signup`, userData)
       .pipe(tap((res) => this.AuthHandleSuccess(res)));
   }
 
