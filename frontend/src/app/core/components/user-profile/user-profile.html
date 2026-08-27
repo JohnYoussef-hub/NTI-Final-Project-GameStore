@@ -1,0 +1,62 @@
+<div class="max-w-3xl mx-auto p-8 mt-10">
+  
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <div class="text-center py-10 text-slate-500">
+      <i class="pi pi-spin pi-spinner text-3xl mb-3"></i>
+      <p>Loading profile...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <!-- Error State -->
+    <div class="bg-rose-50 text-rose-600 p-4 rounded-lg border border-rose-200 text-center">
+      <i class="pi pi-exclamation-triangle mr-2"></i> {{ errorMessage() }}
+    </div>
+  } @else if (userInfo(); as user) {
+    <!-- Loaded Profile State -->
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+      
+      <!-- Header Banner -->
+      <div class="h-32 bg-gradient-to-r from-slate-800 to-slate-900 relative">
+        <div class="absolute -bottom-12 left-8">
+          <img 
+            [src]="user.image || 'https://ui-avatars.com/api/?name=' + user.name + '&background=0D8ABC&color=fff'" 
+            alt="Profile Avatar" 
+            class="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover bg-white"
+          />
+        </div>
+      </div>
+
+      <!-- Profile Details -->
+      <div class="pt-16 pb-8 px-8 flex justify-between items-start">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-800">{{ user.name }}</h1>
+          <p class="text-slate-500">{{ user.email }}</p>
+        </div>
+        
+        <div class="flex gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-600">
+            {{ user.role }}
+          </span>
+          <span 
+            class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+            [ngClass]="user.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'"
+          >
+            {{ user.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-100 px-8 py-6 grid grid-cols-2 gap-6 bg-slate-50">
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase">Member Since</label>
+          <p class="text-slate-700 font-medium">{{ user.createdAt | date:'longDate' }}</p>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase">Last Updated</label>
+          <p class="text-slate-700 font-medium">{{ user.updatedAt | date:'medium' }}</p>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

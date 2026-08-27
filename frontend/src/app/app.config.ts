@@ -6,7 +6,6 @@ import Aura from '@primeuix/themes/aura';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -14,8 +13,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     providePrimeNG({
       theme: {
-        preset: Aura, // Automatically styles PrimeNG components
-        options: { darkModeSelector: '.dark' }, // Optional: enables Tailwind dark mode sync
+        preset: Aura,
+        options: { darkModeSelector: '.dark' },
       },
     }),
   ],

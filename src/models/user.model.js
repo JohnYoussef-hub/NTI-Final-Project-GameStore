@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema({
         type : String ,
         enum : ["user" , "admin"] ,
         default : "user" ,
-        select : false
+        select : true
     } ,
     isDeleted : {
         type : Boolean , 

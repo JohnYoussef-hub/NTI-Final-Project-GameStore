@@ -11,7 +11,9 @@ const auth = require("./middlewares/auth")
 const restrictTo = require("./middlewares/restrictTo")
 const adminRouter = require("./routes/admin.route")
 const app = express()
+const cors = require('cors');
 
+app.use(cors());
 
 app.use(express.json())
 app.use(morgan("dev"))
