@@ -47,7 +47,7 @@
             <tr>
               <td class="font-semibold">{{ game.title }}</td>
               <td>{{ game.genre }}</td>
-              <td>\${{ game.price }}</td>
+              <td>${{ game.price }}</td>
               <td>
                 <p-tag
                   [value]="game.stock.toString()"
@@ -56,12 +56,15 @@
               </td>
               <td>
                 <div class="flex gap-1 flex-wrap">
-                  <span
-                    *ngFor="let p of game.platform"
-                    class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200"
-                  >
-                    {{ p }}
-                  </span>
+                  @for (p of game.platform; track p) {
+                    <span
+                      class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200"
+                    >
+                      {{ p }}
+                    </span>
+                  } @empty {
+                    <span class="text-xs text-slate-400 italic">N/A</span>
+                  }
                 </div>
               </td>
               <td class="text-center space-x-2">
