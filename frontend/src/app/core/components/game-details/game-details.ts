@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { Game } from '../../models/game';
 import { WishlistService } from '../../services/wishlist.service';
@@ -14,6 +14,7 @@ import { WishlistService } from '../../services/wishlist.service';
 })
 export class GameDetails implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private gameService = inject(GameService);
   private wishlistService = inject(WishlistService);
   private cdr = inject(ChangeDetectorRef);
@@ -26,14 +27,20 @@ export class GameDetails implements OnInit {
       return;
     }
 
+    const userId = this.wishlistService.getUserId();
+    if (!userId) {
+      alert('Please log in first to add to wishlist.');
+      this.router.navigateByUrl('/login');
+      return;
+    }
+
     this.wishlistService.addToWishlist(this.game._id).subscribe({
-      next: (response) => {
-        console.log('Game added to wishlist:', response);
+      next: () => {
         alert('Game added to wishlist!');
       },
       error: (error) => {
-        console.error('Error adding game to wishlist:', error);
-        alert('Could not add game to wishlist.');
+        const message = error?.error?.message || error?.message || 'Could not add game to wishlist.';
+        alert(message === 'Please log in first to use the wishlist.' ? 'Please log in first to add to wishlist.' : message);
       }
     });
   }
@@ -48,14 +55,11 @@ export class GameDetails implements OnInit {
   fetchGameDetails(id: string): void {
     this.gameService.getGameById(id).subscribe({
       next: (response) => {
-        console.log('Game details response:', response);
         this.game = response.data;
         this.loading = false;
-        console.log('Game loaded:', this.game);
         this.cdr.detectChanges();
       },
-      error: (error) => {
-        console.error('Error fetching game details:', error);
+      error: () => {
         this.loading = false;
         this.cdr.detectChanges();
       }

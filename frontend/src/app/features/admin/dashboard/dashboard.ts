@@ -19,6 +19,7 @@ import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -95,11 +96,13 @@ export class Dashboard implements OnInit {
     this.loadingGames.set(true);
     this.adminService.getGames().subscribe({
       next: (data) => {
-        this.games.set(data);
+        const payload = Array.isArray(data) ? data : data?.data ?? data?.games ?? [];
+        this.games.set(Array.isArray(payload) ? payload : []);
         this.loadingGames.set(false);
       },
       error: () => {
         this.loadingGames.set(false);
+        this.games.set([]);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -113,11 +116,13 @@ export class Dashboard implements OnInit {
     this.loadingUsers.set(true);
     this.adminService.getUsers().subscribe({
       next: (data) => {
-        this.users.set(data);
+        const payload = Array.isArray(data) ? data : data?.users ?? data?.data ?? [];
+        this.users.set(Array.isArray(payload) ? payload : []);
         this.loadingUsers.set(false);
       },
       error: () => {
         this.loadingUsers.set(false);
+        this.users.set([]);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -219,6 +224,7 @@ export class Dashboard implements OnInit {
               summary: 'Deleted',
               detail: 'Game removed from store',
             });
+            this.fetchGames();
           },
           error: (err) =>
             this.messageService.add({

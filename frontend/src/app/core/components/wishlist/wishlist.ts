@@ -28,8 +28,12 @@ export class Wishlist implements OnInit {
   error = '';
 
   ngOnInit(): void {
-
-    console.log('Wishlist component started');
+    if (!this.wishlistService.getUserId()) {
+      this.loading = false;
+      this.error = 'Please log in first to use your wishlist.';
+      this.cdr.detectChanges();
+      return;
+    }
 
     this.loadWishlist();
   }
@@ -42,23 +46,17 @@ export class Wishlist implements OnInit {
     this.wishlistService.getWishlist().subscribe({
 
       next: (response) => {
-
-        console.log('Wishlist API response:', response);
-
         this.games = response.data.wishlist;
 
         this.loading = false;
-
-        console.log('Games loaded:', this.games);
-
         this.cdr.detectChanges();
       },
 
       error: (error) => {
-
-        console.error('Wishlist API error:', error);
-
-        this.error = 'Failed to load wishlist.';
+        const message = error?.error?.message || error?.message || 'Failed to load wishlist.';
+        this.error = message === 'Please log in first to use the wishlist.'
+          ? 'Please log in first to use your wishlist.'
+          : 'Failed to load wishlist.';
         this.loading = false;
 
         this.cdr.detectChanges();
@@ -72,7 +70,6 @@ export class Wishlist implements OnInit {
     this.wishlistService.removeFromWishlist(gameId).subscribe({
 
       next: () => {
-
         this.games = this.games.filter(
           game => game._id !== gameId
         );
@@ -80,13 +77,8 @@ export class Wishlist implements OnInit {
         this.cdr.detectChanges();
       },
 
-      error: (error) => {
-
-        console.error(
-          'Error removing game from wishlist:',
-          error
-        );
-
+      error: () => {
+        this.error = 'Failed to remove this game from your wishlist.';
       }
 
     });

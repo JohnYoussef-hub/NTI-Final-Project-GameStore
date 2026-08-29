@@ -1,36 +1,26 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive], // Added RouterLinkActive
-  templateUrl: './navbar.html'
+  imports: [CommonModule, RouterLink, RouterLinkActive],
+  templateUrl: './navbar.html',
 })
 export class NavbarComponent {
-  private router = inject(Router);
+  private authService = inject(AuthService);
 
   get isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return this.authService.isAuthenticated();
   }
 
   get isAdmin(): boolean {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        return user.role === 'admin';
-      } catch (e) {
-        return false; 
-      }
-    }
-    return false;
+    return this.authService.isAdmin();
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

@@ -43,7 +43,6 @@ export class Login {
   });
 
   onSubmit() {
-    console.log('Is form invalid?', this.loginForm.invalid, 'Form errors:', this.loginForm.errors);
     if (this.loginForm.invalid) return;
 
     this.isLoading.set(true);
@@ -52,8 +51,8 @@ export class Login {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.isLoading.set(false);
-
-        this.router.navigate(['/admin']);
+        const role = this.authService.currentUser()?.role;
+        this.router.navigate([role === 'admin' ? '/admin' : '/home']);
       },
       error: (err) => {
         this.isLoading.set(false);

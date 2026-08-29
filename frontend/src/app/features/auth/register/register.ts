@@ -62,13 +62,14 @@ export class Register {
         this.messageService.add({
           severity: "success",
           summary: "Account Created",
-          detail: "Successfully registered! Redirecting to login...",
+          detail: "Verification code sent to your email.",
         });
-        
-        // Wait 1.5 seconds so the user can actually read the success toast before navigating
+
         setTimeout(() => {
-          this.router.navigate(["/login"]);
-        }, 1500);
+          this.router.navigate(["/otp"], {
+            queryParams: { email: credentials.email },
+          });
+        }, 1200);
       },
       error: (err) => {
         this.isLoading.set(false);
