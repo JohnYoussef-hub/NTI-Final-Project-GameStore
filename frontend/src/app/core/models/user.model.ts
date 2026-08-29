@@ -1,11 +1,11 @@
 export interface User {
-    _id:string;
-    name: string;
-    email:string;
-    role: 'admin' | 'user';
-    image?:string,
-    isActive: boolean;
-    createdAt?:string;
-    updatedAt?:string;
-
+  _id?: string;
+  id?: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+  image?: string;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }

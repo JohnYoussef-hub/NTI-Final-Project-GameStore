@@ -31,8 +31,7 @@ export class UserProfileComponent implements OnInit {
 
     try {
       const localUser = JSON.parse(localUserStr);
-
-      const userId = localUser.id;
+      const userId = localUser.id || localUser._id;
 
       if (!userId) {
         this.errorMessage.set('Could not find user ID in local storage.');
@@ -40,23 +39,39 @@ export class UserProfileComponent implements OnInit {
         return;
       }
 
+      const fallbackUser = {
+        ...localUser,
+        _id: userId,
+        id: localUser.id || userId,
+      } as User;
+
+      this.userInfo.set(fallbackUser);
+
       this.http
-        .get<{ status: string; message: string; data: { user: User } }>(
-          `http://localhost:3000/users/${userId}`,
-        )
+        .get<{ status: string; message: string; data: { user: User } }>(`http://localhost:3000/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+          },
+        })
         .subscribe({
           next: (response) => {
-            this.userInfo.set(response.data.user);
+            const user = response?.data?.user ?? fallbackUser;
+            this.userInfo.set({
+              ...user,
+              _id: user._id || user.id || userId,
+              id: user.id || user._id || userId,
+            } as User);
+            this.errorMessage.set(null);
             this.isLoading.set(false);
           },
           error: (err) => {
             console.error('Database fetch error:', err);
-            this.errorMessage.set('Could not load fresh profile data from the database.');
+            this.errorMessage.set(null);
             this.isLoading.set(false);
           },
         });
     } catch (e) {
-      console.error('Failed to parse user from storage');
+      console.error('Failed to parse user from storage', e);
       this.errorMessage.set('Corrupted local data. Please log in again.');
       this.isLoading.set(false);
     }
