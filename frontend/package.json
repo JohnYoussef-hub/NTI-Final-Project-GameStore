@@ -11,12 +11,12 @@
   "private": true,
   "packageManager": "npm@11.16.0",
   "dependencies": {
-    "@angular/common": "^22.1.0",
-    "@angular/compiler": "^22.1.0",
-    "@angular/core": "^22.1.0",
-    "@angular/forms": "^22.1.0",
-    "@angular/platform-browser": "^22.1.0",
-    "@angular/router": "^22.1.0",
+    "@angular/common": "^21.2.22",
+    "@angular/compiler": "^21.2.22",
+    "@angular/core": "^21.2.22",
+    "@angular/forms": "^21.2.22",
+    "@angular/platform-browser": "^21.2.22",
+    "@angular/router": "^21.2.22",
     "@primeng/themes": "^21.0.4",
     "primeflex": "^4.0.0",
     "primeicons": "^8.0.0",
@@ -26,15 +26,15 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/build": "^22.1.5",
-    "@angular/cli": "^22.1.5",
-    "@angular/compiler-cli": "^22.1.0",
+    "@angular/build": "^21.2.22",
+    "@angular/cli": "^21.2.22",
+    "@angular/compiler-cli": "^21.2.22",
     "@tailwindcss/postcss": "^4.3.3",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.26",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.3.3",
-    "typescript": "~6.0.2",
+    "typescript": "~5.9.3",
     "vitest": "^4.0.8"
   }
 }

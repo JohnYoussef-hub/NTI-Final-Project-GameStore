@@ -1,0 +1,264 @@
+<div class="min-h-screen bg-gray-950 text-white p-8">
+
+  <!-- ================= HERO ================= -->
+
+  <div class="max-w-6xl mx-auto text-center mb-12">
+
+    <h1 class="text-4xl md:text-5xl font-bold mb-3">
+      Game Store
+    </h1>
+
+    <p class="text-gray-400 text-lg">
+      Discover your next favorite game
+    </p>
+
+  </div>
+
+
+  <!-- ================= SEARCH & FILTER ================= -->
+
+  <div class="max-w-6xl mx-auto mb-10">
+
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- Search -->
+
+        <div class="md:col-span-2">
+
+          <label class="block text-sm text-gray-400 mb-2">
+            Search
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="filterGames()"
+            placeholder="Search by game name or genre..."
+            class="w-full px-4 py-3 rounded-lg bg-gray-950 border border-gray-700 text-white outline-none focus:border-blue-500 transition"
+          />
+
+        </div>
+
+
+        <!-- Genre Filter -->
+
+        <div>
+
+          <label class="block text-sm text-gray-400 mb-2">
+            Genre
+          </label>
+
+          <select
+            [(ngModel)]="selectedGenre"
+            (change)="filterGames()"
+            class="w-full px-4 py-3 rounded-lg bg-gray-950 border border-gray-700 text-white outline-none focus:border-blue-500 transition"
+          >
+
+            <option value="">
+              All Genres
+            </option>
+
+            @for (genre of genres; track genre) {
+
+              <option [value]="genre">
+                {{ genre }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Clear Button -->
+
+      @if (searchTerm || selectedGenre) {
+
+        <button
+          (click)="clearFilters()"
+          class="mt-4 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm transition"
+        >
+          Clear Filters
+        </button>
+
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= GAMES ================= -->
+
+  <div class="max-w-6xl mx-auto">
+
+    <div class="flex items-center justify-between mb-6">
+
+      <h2 class="text-2xl font-bold">
+        Games
+      </h2>
+
+      <span class="text-gray-400 text-sm">
+        {{ filteredGames.length }} games found
+      </span>
+
+    </div>
+
+
+    <!-- Loading -->
+
+    @if (loading) {
+
+      <div class="text-center py-20">
+
+        <p class="text-gray-400 text-lg">
+          Loading games...
+        </p>
+
+      </div>
+
+    }
+
+    <!-- Games -->
+
+    @else if (paginatedGames.length > 0) {
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        @for (game of paginatedGames; track game._id) {
+
+          <div
+            class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-lg hover:border-blue-500 transition"
+          >
+
+            <!-- Image -->
+
+            <img
+              [src]="game.images[0]"
+              [alt]="game.title"
+              class="w-full h-48 object-cover"
+            />
+
+
+            <!-- Game Info -->
+
+            <div class="p-5">
+
+              <h3 class="text-xl font-bold mb-2">
+                {{ game.title }}
+              </h3>
+
+              <p class="text-gray-400 text-sm mb-3">
+                {{ game.genre }}
+              </p>
+
+              <p class="text-gray-500 text-sm mb-4 line-clamp-2">
+                {{ game.description }}
+              </p>
+
+
+              <!-- Price + Details -->
+
+              <div class="flex items-center justify-between">
+
+                <span class="text-xl font-bold text-blue-400">
+                  ${{ game.price }}
+                </span>
+
+
+                <a
+                  [routerLink]="['/game', game._id]"
+                  class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-semibold transition"
+                >
+                  Details
+                </a>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- ================= PAGINATION ================= -->
+
+      @if (totalPages > 1) {
+
+        <div class="flex items-center justify-center gap-2 mt-10">
+
+          <!-- Previous -->
+
+          <button
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+            class="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg transition"
+          >
+            Previous
+          </button>
+
+
+          <!-- Page Numbers -->
+
+          @for (page of [].constructor(totalPages); track $index) {
+
+            <button
+              (click)="goToPage($index + 1)"
+              class="px-4 py-2 rounded-lg transition"
+              [class.bg-blue-600]="currentPage === $index + 1"
+              [class.bg-gray-800]="currentPage !== $index + 1"
+            >
+              {{ $index + 1 }}
+            </button>
+
+          }
+
+
+          <!-- Next -->
+
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+            class="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg transition"
+          >
+            Next
+          </button>
+
+        </div>
+
+      }
+
+    }
+
+    <!-- No Games -->
+
+    @else {
+
+      <div class="text-center py-20">
+
+        <p class="text-xl text-gray-500 mb-4">
+          No games found
+        </p>
+
+        <button
+          (click)="clearFilters()"
+          class="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition"
+        >
+          Show All Games
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>
