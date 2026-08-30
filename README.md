@@ -64,7 +64,3 @@ A **Full-Stack Game Store** built with **Node.js, Express.js, and Angular** as p
 ### 🔵 Frontend Developers
 * **Jannah Abouraya** → Frontend
 * **Eslam Adel** → Frontend
-
-## 📌 Project Status
-🚧 **Under Development**
-More features and improvements will be added during development.
