@@ -66,10 +66,16 @@ export class AuthService {
     }
   }
 
+  clearAuthState() {
+    this.currentUser.set(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  }
+
   register(userData: any) {
-    return this.http
-      .post<AuthResponse>(`${this.url}/signup`, userData)
-      .pipe(tap((res) => this.AuthHandleSuccess(res)));
+    return this.http.post<AuthResponse>(`${this.url}/signup`, userData).pipe(
+      tap(() => this.clearAuthState()),
+    );
   }
 
   login(credentials: any) {
