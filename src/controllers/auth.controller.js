@@ -86,6 +86,38 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.resendOTP = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return next(new AppError(400, "Email is required"));
+  }
+
+  const findUser = await User.findOne({ isDeleted: false, email });
+  if (!findUser) {
+    return next(new AppError(400, "This user is not found"));
+  }
+
+  if (findUser.isActive) {
+    return next(new AppError(400, "This email is already active"));
+  }
+
+  const OTP = customAlphabet("0123456789", 6)();
+  const confirmOTP = await bcrypt.hash(OTP, 10);
+  const OTPExpire = Date.now() + 10 * 60 * 1000;
+
+  findUser.confirmOTP = confirmOTP;
+  findUser.OTPExpire = OTPExpire;
+  await findUser.save();
+
+  await sendEmail(email, "CONFIRM OTP", `the OTP is ${OTP}`);
+
+  res.status(200).json({
+    success: true,
+    message: "New OTP sent successfully",
+  });
+});
+
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   const findUser = await User.findOne({ email, isDeleted: false }).select(
@@ -107,9 +139,14 @@ exports.login = catchAsync(async (req, res, next) => {
       accessToken: token,
       user: {
         id: findUser._id,
+        _id: findUser._id,
         name: findUser.name,
         email: findUser.email,
         role: findUser.role,
+        isActive: findUser.isActive,
+        image: findUser.image,
+        createdAt: findUser.createdAt,
+        updatedAt: findUser.updatedAt,
       },
     },
   });
@@ -119,33 +156,67 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
   const findUser = await User.findOne({ isDeleted: false, email });
   if (!findUser) return next(new AppError(400, "This user is not found"));
-  const resetToken = await crypto.randomBytes(32).toString("hex");
-  findUser.resetToken = resetToken;
+
+  const OTP = customAlphabet("0123456789", 6)();
+  const hashedOTP = await bcrypt.hash(OTP, 10);
+  const OTPExpire = Date.now() + 10 * 60 * 1000;
+
+  findUser.resetOTP = hashedOTP;
+  findUser.resetOTPExpire = OTPExpire;
+  findUser.resetToken = undefined;
   await findUser.save();
-  const link = `http://localhost:3000/auth/reset-password/${resetToken}`;
-  sendEmail(
-    email,
-    "reset password link",
-    template(link, findUser.name, "Reset Link"),
-  );
+
+  await sendEmail(email, "Reset Password OTP", `Your password reset OTP is ${OTP}`);
+
   res.status(200).json({
     success: true,
-    message: "Reset link is sent to email",
+    message: "Reset OTP is sent to your email",
   });
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
+  const { email, otp, password } = req.body;
   const { token } = req.params;
-  const { password } = req.body;
-  const findUser = await User.findOne({ isDeleted: false, resetToken: token });
-  if (!findUser)
-    return next(new AppError(400, "The reset token is invalid or expired"));
+
+  if (token) {
+    const findUser = await User.findOne({ isDeleted: false, resetToken: token });
+    if (!findUser)
+      return next(new AppError(400, "The reset token is invalid or expired"));
+    if (password.length < 6)
+      return next(new AppError(400, "Password must 6 char or more"));
+
+    const hashedPassword = await bcrypt.hash(password, +process.env.SALT_ROUND);
+    findUser.password = hashedPassword;
+    findUser.resetToken = undefined;
+    await findUser.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  }
+
+  if (!email || !otp || !password)
+    return next(new AppError(400, "Email, OTP and password are required"));
+
+  const findUser = await User.findOne({ isDeleted: false, email }).select(
+    "+password +resetOTP +resetOTPExpire",
+  );
+  if (!findUser) return next(new AppError(400, "This user is not found"));
+
+  const check = await bcrypt.compare(otp, findUser.resetOTP || "");
+  if (!check || !findUser.resetOTP || !findUser.resetOTPExpire || findUser.resetOTPExpire < Date.now())
+    return next(new AppError(400, "Invalid or expired OTP"));
+
   if (password.length < 6)
     return next(new AppError(400, "Password must 6 char or more"));
+
   const hashedPassword = await bcrypt.hash(password, +process.env.SALT_ROUND);
   findUser.password = hashedPassword;
-  findUser.resetToken = undefined;
+  findUser.resetOTP = undefined;
+  findUser.resetOTPExpire = undefined;
   await findUser.save();
+
   res.status(200).json({
     success: true,
     message: "Password reset successfully",
