@@ -56,6 +56,7 @@ export class OtpPage {
     this.authService.confirmEmail(email, otp).subscribe({
       next: () => {
         this.isLoading.set(false);
+        this.authService.clearAuthState();
         this.messageService.add({
           severity: 'success',
           summary: 'OTP verified',
