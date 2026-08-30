@@ -10,6 +10,19 @@
 
 A **Full-Stack Game Store** built with **Node.js, Express.js, and Angular** as part of the NTI training final project.
 
+
+[![Cyu6Nv1.md.jpg](https://iili.io/Cyu6Nv1.md.jpg)](https://freeimage.host/i/Cyu6Nv1)
+[![CyuZmMu.md.jpg](https://iili.io/CyuZmMu.md.jpg)](https://freeimage.host/i/CyuZmMu)
+[![CyuZZw7.md.jpg](https://iili.io/CyuZZw7.md.jpg)](https://freeimage.host/i/CyuZZw7)
+[![CyuZL92.md.jpg](https://iili.io/CyuZL92.md.jpg)](https://freeimage.host/i/CyuZL92)
+[![Cyut3AB.md.jpg](https://iili.io/Cyut3AB.md.jpg)](https://freeimage.host/i/Cyut3AB)
+[![CyutKt1.md.jpg](https://iili.io/CyutKt1.md.jpg)](https://freeimage.host/i/CyutKt1)
+[![CyutoKJ.md.jpg](https://iili.io/CyutoKJ.md.jpg)](https://freeimage.host/i/CyutoKJ)
+[![Cyu1oba.md.jpg](https://iili.io/Cyu1oba.md.jpg)](https://freeimage.host/i/Cyu1oba)
+[![CyutRtt.md.jpg](https://iili.io/CyutRtt.md.jpg)](https://freeimage.host/i/CyutRtt)
+[![CyutYVn.md.jpg](https://iili.io/CyutYVn.md.jpg)](https://freeimage.host/i/CyutYVn)
+
+
 ## ✨ Features
 
 ### 🔐 1. Authentication
