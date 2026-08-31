@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../../../core/models/user.model';
+import { User } from '../../../../../../models/user.model';
 
 @Component({
   selector: 'app-user-profile',
@@ -48,11 +48,14 @@ export class UserProfileComponent implements OnInit {
       this.userInfo.set(fallbackUser);
 
       this.http
-        .get<{ status: string; message: string; data: { user: User } }>(`http://localhost:3000/users/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+        .get<{ status: string; message: string; data: { user: User } }>(
+          `http://localhost:3000/users/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+            },
           },
-        })
+        )
         .subscribe({
           next: (response) => {
             const user = response?.data?.user ?? fallbackUser;

@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { User } from '../models/user.model';
-import { AuthResponse } from '../models/authresponse.model';
+import { User } from '../../../../../models/user.model';
+import { AuthResponse } from '../../../../../models/authresponse.model';
 
 @Injectable({
   providedIn: 'root',
@@ -73,9 +73,9 @@ export class AuthService {
   }
 
   register(userData: any) {
-    return this.http.post<AuthResponse>(`${this.url}/signup`, userData).pipe(
-      tap(() => this.clearAuthState()),
-    );
+    return this.http
+      .post<AuthResponse>(`${this.url}/signup`, userData)
+      .pipe(tap(() => this.clearAuthState()));
   }
 
   login(credentials: any) {

@@ -7,7 +7,11 @@ const User = require("../models/user.model");
 const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
 const sendEmail = require("../utils/sendEmail");
-const template = require("../utils/emailTemplate");
+const {
+  template,
+  passwordResetOtpTemplate,
+  emailVerificationTemplate,
+} = require("../utils/emailTemplate");
 
 const jwtSign = promisify(jwt.sign);
 
@@ -54,7 +58,8 @@ exports.signUp = catchAsync(async (req, res, next) => {
     confirmOTP,
     OTPExpire,
   });
-  await sendEmail(email, "CONFIRM OTP", `the OTP is ${OTP}`);
+  const emailTemplate = emailVerificationTemplate(OTP, req.body.name || "User");
+  await sendEmail(email, "Confirm Your Email Address", emailTemplate);
   res.status(200).json({
     sucess: true,
     data: findUser,
@@ -110,7 +115,8 @@ exports.resendOTP = catchAsync(async (req, res, next) => {
   findUser.OTPExpire = OTPExpire;
   await findUser.save();
 
-  await sendEmail(email, "CONFIRM OTP", `the OTP is ${OTP}`);
+  const emailTemplate = emailVerificationTemplate(OTP, findUser.name);
+  await sendEmail(email, "Confirm Your Email Address", emailTemplate);
 
   res.status(200).json({
     success: true,
@@ -166,7 +172,8 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   findUser.resetToken = undefined;
   await findUser.save();
 
-  await sendEmail(email, "Reset Password OTP", `Your password reset OTP is ${OTP}`);
+  const emailTemplate = passwordResetOtpTemplate(OTP, findUser.name);
+  await sendEmail(email, "Reset Password OTP", emailTemplate);
 
   res.status(200).json({
     success: true,
@@ -179,7 +186,10 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
 
   if (token) {
-    const findUser = await User.findOne({ isDeleted: false, resetToken: token });
+    const findUser = await User.findOne({
+      isDeleted: false,
+      resetToken: token,
+    });
     if (!findUser)
       return next(new AppError(400, "The reset token is invalid or expired"));
     if (password.length < 6)
@@ -205,7 +215,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   if (!findUser) return next(new AppError(400, "This user is not found"));
 
   const check = await bcrypt.compare(otp, findUser.resetOTP || "");
-  if (!check || !findUser.resetOTP || !findUser.resetOTPExpire || findUser.resetOTPExpire < Date.now())
+  if (
+    !check ||
+    !findUser.resetOTP ||
+    !findUser.resetOTPExpire ||
+    findUser.resetOTPExpire < Date.now()
+  )
     return next(new AppError(400, "Invalid or expired OTP"));
 
   if (password.length < 6)

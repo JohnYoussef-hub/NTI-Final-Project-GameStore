@@ -11,7 +11,14 @@ import { AuthService } from '../../../core/services/auth';
 @Component({
   selector: 'app-otp',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonModule, InputTextModule, ToastModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonModule,
+    InputTextModule,
+    ToastModule,
+  ],
   templateUrl: './otp.html',
   providers: [MessageService],
 })
@@ -40,10 +47,10 @@ export class OtpPage {
   onSubmit() {
     if (this.otpForm.invalid) return;
 
-    const otp = this.otpForm.get('otp')?.value.trim();
+    const otp = this.otpForm.get('otp')?.value?.trim() || '';
     const email = this.email();
 
-    if (!email) {
+    if (!email || !otp) {
       this.messageService.add({
         severity: 'error',
         summary: 'Missing email',
