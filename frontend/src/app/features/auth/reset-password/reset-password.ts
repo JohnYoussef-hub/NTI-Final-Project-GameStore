@@ -11,7 +11,14 @@ import { AuthService } from '../../../core/services/auth';
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonModule, InputTextModule, ToastModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonModule,
+    InputTextModule,
+    ToastModule,
+  ],
   templateUrl: './reset-password.html',
   providers: [MessageService],
 })
@@ -40,11 +47,11 @@ export class ResetPasswordPage {
   submit() {
     if (this.form.invalid) return;
 
-    const otp = this.form.get('otp')?.value.trim();
-    const password = this.form.get('password')?.value.trim();
+    const otp = this.form.get('otp')?.value?.trim() || '';
+    const password = this.form.get('password')?.value?.trim() || '';
     const email = this.email();
 
-    if (!email) {
+    if (!email || !otp || !password) {
       this.messageService.add({
         severity: 'error',
         summary: 'Missing email',

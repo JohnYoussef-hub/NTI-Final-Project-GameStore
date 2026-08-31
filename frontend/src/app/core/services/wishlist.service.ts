@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Game } from '../models/game';
+import { Game } from '../../../../../models/game';
 
 @Injectable({
   providedIn: 'root',
@@ -39,9 +39,12 @@ export class WishlistService {
     };
   }> {
     const userId = this.requireUserId();
-    return this.http.get<{ status: string; message: string; results: number; data: { wishlist: Game[] } }>(
-      `${this.apiUrl}/${userId}`,
-    );
+    return this.http.get<{
+      status: string;
+      message: string;
+      results: number;
+      data: { wishlist: Game[] };
+    }>(`${this.apiUrl}/${userId}`);
   }
 
   addToWishlist(gameId: string): Observable<any> {

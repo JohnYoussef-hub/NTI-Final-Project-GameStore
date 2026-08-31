@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { User } from '../models/user.model';
-import { Game } from '../models/game.model';
+import { User } from '../../../../../models/user.model';
+import { Game } from '../../../../../models/game.model';
 import { map } from 'rxjs';
 
 @Injectable({

@@ -11,7 +11,14 @@ import { AuthService } from '../../../core/services/auth';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonModule, InputTextModule, ToastModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonModule,
+    InputTextModule,
+    ToastModule,
+  ],
   templateUrl: './forgot-password.html',
   providers: [MessageService],
 })
@@ -30,7 +37,8 @@ export class ForgotPasswordPage {
   submit() {
     if (this.form.invalid) return;
 
-    const email = this.form.get('email')?.value.trim();
+    const email = this.form.get('email')?.value?.trim() || '';
+    if (!email) return;
     this.isLoading.set(true);
 
     this.authService.sendResetOtp(email).subscribe({

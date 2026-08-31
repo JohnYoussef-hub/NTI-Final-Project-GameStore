@@ -2,8 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { AdminService } from '../../../core/services/admin';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Game } from '../../../core/models/game.model';
-import { User } from '../../../core/models/user.model';
+import { Game } from '../../../../../../models/game.model';
+import { User } from '../../../../../../models/user.model';
 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -96,7 +96,7 @@ export class Dashboard implements OnInit {
     this.loadingGames.set(true);
     this.adminService.getGames().subscribe({
       next: (data) => {
-        const payload = Array.isArray(data) ? data : data?.data ?? data?.games ?? [];
+        const payload = Array.isArray(data) ? data : (data?.data ?? data?.games ?? []);
         this.games.set(Array.isArray(payload) ? payload : []);
         this.loadingGames.set(false);
       },
@@ -116,7 +116,7 @@ export class Dashboard implements OnInit {
     this.loadingUsers.set(true);
     this.adminService.getUsers().subscribe({
       next: (data) => {
-        const payload = Array.isArray(data) ? data : data?.users ?? data?.data ?? [];
+        const payload = Array.isArray(data) ? data : (data?.users ?? data?.data ?? []);
         this.users.set(Array.isArray(payload) ? payload : []);
         this.loadingUsers.set(false);
       },
@@ -244,22 +244,24 @@ export class Dashboard implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        this.adminService.deleteUser(user._id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'info',
-              summary: 'Deleted',
-              detail: 'User removed.',
-            });
-            this.fetchUsers();
-          },
-          error: (err) =>
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error?.message || 'Could not delete user.',
-            }),
-        });
+        if (user._id) {
+          this.adminService.deleteUser(user._id).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'info',
+                summary: 'Deleted',
+                detail: 'User removed.',
+              });
+              this.fetchUsers();
+            },
+            error: (err) =>
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.error?.message || 'Could not delete user.',
+              }),
+          });
+        }
       },
     });
   }
